@@ -1,34 +1,49 @@
 
-static int NUMGENES = 100;
-static float MUTCH = 0.01;
 class Animal implements Comparable<Animal> {
-  int[] genes = new int[NUMGENES];
+  PImage image;
   int fitness = 0;
+  int[] genes;
 
- Animal() {
-    for (int i = 0; i<NUMGENES; i++) {
-      genes[i] =  (int)random(0, 255);
-    }
+  Animal(PImage img) {
+    image = img;
+    image.loadPixels();
   }
 
   Animal(Animal goal) {
-    for (int i = 0; i<NUMGENES; i++) {
-      genes[i] =  (int)random(0, 255);
-    }
+    image = createImage(imgw, imgh, RGB);
+    image.loadPixels();
+    genes = new int[bw*bh];
+    fillRandom(genes);
+    fillImage(genes, goal.image, image);
     fitness = getFitness(goal);
   }
-  
-  Animal(Animal a, Animal b) {
-    for (int i = 0; i<NUMGENES; i++) {
-      int ch = (int) random(0,1 / MUTCH);
+
+  Animal(Animal aa, Animal bb) {
+    image = createImage(imgw, imgh, RGB);
+    image.loadPixels();
+    for (int i = 0; i<imgw*imgh; i++) {
+      int ch = (int) random(0, 1 / MUTCH);
       int mutation = 0;
-      if(ch == 0){
-        mutation = (int)random(-10,10);
+      if (ch == 0) {
+        mutation = (int)random(-2, 2);
       }
-      if (i >= NUMGENES/2) {
-        genes[i] = b.genes[i] + mutation;
+      if (i >= (imgw*imgh)/2) {
+        int r = bb.image.pixels[i]>>16 & 0xFF;
+        r = (r+mutation) >= 0  ? (r+mutation) : (r+mutation) <= 255  ? (r+mutation) : 255;
+        int g = bb.image.pixels[i]>>8 & 0xFF;
+        g = (g+mutation) >= 0  ? (g+mutation) : (g+mutation) <= 255  ? (g+mutation) : 255;
+        int b = bb.image.pixels[i] & 0xFF;
+        b = (b+mutation) >= 0  ? (b+mutation) : (b+mutation) <= 255  ? (b+mutation) : 255;
+
+        image.pixels[i] = (r<<16 |g<<8 | b) ;
       } else {
-        genes[i] = a.genes[i] + mutation;
+        int r = aa.image.pixels[i]>>16 & 0xFF;
+        r = (r+mutation) >= 0  ? (r+mutation) : (r+mutation) <= 255  ? (r+mutation) : 255;
+        int g = aa.image.pixels[i]>>8 & 0xFF;
+        g = (g+mutation) >= 0  ? (g+mutation) : (g+mutation) <= 255  ? (g+mutation) : 255;
+        int b = aa.image.pixels[i] & 0xFF;
+        b = (b+mutation) >= 0  ? (b+mutation) : (b+mutation) <= 255  ? (b+mutation) : 255;
+        image.pixels[i] = (r<<16 |g<<8 | b);
       }
     }
     fitness = getFitness(goal);
@@ -46,19 +61,16 @@ class Animal implements Comparable<Animal> {
   }
 
   void render(int x, int y) {
-    //text(fitness, x, y-10); 
-    for (int i = 0; i<NUMGENES; i++) {
-      color c = color(genes[i]);  // Define color 'c'
-      fill(c);
-      rect(x, y + i*3, 10, 3);
-    }
+    image.updatePixels();
+    image(image, x, y);//, imgw*2, imgh*2);
   }
 
   int getFitness(Animal a) {
     int sumdiff = 0; 
-    for (int i = 0; i<NUMGENES; i++) {
-      sumdiff += abs(genes[i] - a.genes[i]);
+    for (int i = 0; i<imgw*imgh; i++) {
+      sumdiff += abs((image.pixels[i] >> 16 & 0xFF) - (a.image.pixels[i] >> 16 & 0xFF));
     }
     return sumdiff;
   }
 } 
+
