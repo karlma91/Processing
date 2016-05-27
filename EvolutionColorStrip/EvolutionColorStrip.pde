@@ -4,11 +4,11 @@ import java.util.Comparator;
 Animal goal;
 int generation = 0;
 ArrayList<Animal> animals = new ArrayList<Animal>();
-int numans = 25;
-int bw = 4;
-int bh = 4;
+int numans = 35;
+int bw = 32;
+int bh = 32;
 int blocks = bw*bh;
-PImage img;
+PImage img, tofind;
 int imgw = 64;
 int imgh = 64;
 float MUTCH = 0.05;
@@ -23,6 +23,7 @@ void setup() {
   frameRate(500);
   colorMode(RGB, 255);
   img = loadImage("lion.png");
+  tofind = loadImage("leo.png");
   goal = new Animal(img);
   for (int i = 0; i<numans; i++) {
     animals.add(new Animal(goal));
@@ -35,14 +36,19 @@ void setup() {
 
 void fillRandom(int[] idx) {
   ArrayList<Integer> temp = new ArrayList<Integer>();
-  for (int i = 0; i<bw*bh; i++) {
+  for (int i = 0; i<blocks; i++) {
     temp.add(i);
   }
-  for (int i = 0; i<bw*bh; i++) {
+  for (int i = 0; i<blocks; i++) {
     int ii = (int)random(0, temp.size());
-    idx[i] = temp.get(ii);
+    idx[i] = i;//temp.get(ii);
     temp.remove(ii);
   }
+  //print("Rando: ");
+  //for (int i = 0; i<blocks; i++) {
+  //  print(idx[i] + ",");
+  //}
+  //println();
 }
 
 void fillImage(int[] idx, PImage goal, PImage fill) {
@@ -53,11 +59,16 @@ void fillImage(int[] idx, PImage goal, PImage fill) {
     fill.set((i%bw)*bpw, (i/bw)*bph, temp);
   }
 }
+void swap(int[] idx, int a, int b) {
+  int temp = idx[a];
+  idx[a] = idx[b];
+  idx[b] = temp;
+}
 
 void draw() {
   background(51);
   for (int i = 0; i<animals.size(); i++) {
-    animals.get(i).render((i%5)*(imgw+4),(i/5)*(imgh+4));
+    animals.get(i).render((i%5)*(imgw+4), (i/5)*(imgh+4));
   }
   if (animals.get(0).fitness != 0) {
 
@@ -74,8 +85,8 @@ void draw() {
   }
   //animals.get(0).render(imgw, 100);
   goal.render(imgw*6, 100);
+  image(tofind, imgw*6, 200);
   color(255);
   text("Gens: " + generation, 400, 30);
   text("Best: " + animals.get(0).fitness, 400, 50);
 }
-

@@ -12,40 +12,59 @@ class Animal implements Comparable<Animal> {
   Animal(Animal goal) {
     image = createImage(imgw, imgh, RGB);
     image.loadPixels();
-    genes = new int[bw*bh];
+    genes = new int[blocks];
     fillRandom(genes);
-    fillImage(genes, goal.image, image);
+    fillImage(genes, tofind, image);
     fitness = getFitness(goal);
   }
 
   Animal(Animal aa, Animal bb) {
     image = createImage(imgw, imgh, RGB);
     image.loadPixels();
-    for (int i = 0; i<imgw*imgh; i++) {
-      int ch = (int) random(0, 1 / MUTCH);
-      int mutation = 0;
-      if (ch == 0) {
-        mutation = (int)random(-2, 2);
-      }
-      if (i >= (imgw*imgh)/2) {
-        int r = bb.image.pixels[i]>>16 & 0xFF;
-        r = (r+mutation) >= 0  ? (r+mutation) : (r+mutation) <= 255  ? (r+mutation) : 255;
-        int g = bb.image.pixels[i]>>8 & 0xFF;
-        g = (g+mutation) >= 0  ? (g+mutation) : (g+mutation) <= 255  ? (g+mutation) : 255;
-        int b = bb.image.pixels[i] & 0xFF;
-        b = (b+mutation) >= 0  ? (b+mutation) : (b+mutation) <= 255  ? (b+mutation) : 255;
-
-        image.pixels[i] = (r<<16 |g<<8 | b) ;
+    genes = new int[blocks];
+    boolean[] taken1 = new boolean[blocks];
+    boolean[] taken2 = new boolean[blocks];
+    for (int i = 0; i<blocks; i++) {
+      if (i < blocks/2) {
+        taken2[aa.genes[i]] = true;
       } else {
-        int r = aa.image.pixels[i]>>16 & 0xFF;
-        r = (r+mutation) >= 0  ? (r+mutation) : (r+mutation) <= 255  ? (r+mutation) : 255;
-        int g = aa.image.pixels[i]>>8 & 0xFF;
-        g = (g+mutation) >= 0  ? (g+mutation) : (g+mutation) <= 255  ? (g+mutation) : 255;
-        int b = aa.image.pixels[i] & 0xFF;
-        b = (b+mutation) >= 0  ? (b+mutation) : (b+mutation) <= 255  ? (b+mutation) : 255;
-        image.pixels[i] = (r<<16 |g<<8 | b);
+        taken2[bb.genes[i]] = true;
       }
     }
+    for (int i = 0; i<blocks; i++) {
+      if (i < blocks/2) {
+        genes[i] = aa.genes[i];
+        taken1[aa.genes[i]] = true;
+      } else {
+        if (taken1[bb.genes[i]]) {
+          for (int j = 0; j<blocks; j++) {
+            if (!taken2[j]) {
+              genes[i] = j;
+              taken2[j] = true;
+              break;
+            }
+          }
+        } else {
+          genes[i] = bb.genes[i];
+          taken1[bb.genes[i]] = true;
+        }
+      }
+    }
+    int ch = (int) random(0, 1 / MUTCH);
+    if (ch == 0) {
+      int r1 = (int)random(0, blocks);
+      int r2 = (int)random(0, blocks);
+      while (r2==r1) {
+        r2 = (int)random(0, blocks);
+      }
+      swap(genes, r1, r2);
+    }
+    //print("Genes: ");
+    //for (int i = 0; i<blocks; i++) {
+   //  print(genes[i]+ ",");
+   // }
+   // println();
+    fillImage(genes, tofind, image);
     fitness = getFitness(goal);
   }
 
@@ -73,4 +92,3 @@ class Animal implements Comparable<Animal> {
     return sumdiff;
   }
 } 
-
