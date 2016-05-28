@@ -22,7 +22,7 @@ class Animal implements Comparable<Animal> {
     image = createImage(imgw, imgh, RGB);
     image.loadPixels();
     genes = new int[blocks];
-    boolean[] taken1 = new boolean[blocks];
+    /*boolean[] taken1 = new boolean[blocks];
     boolean[] taken2 = new boolean[blocks];
     for (int i = 0; i<blocks; i++) {
       if (i < blocks/2) {
@@ -49,6 +49,13 @@ class Animal implements Comparable<Animal> {
           taken1[bb.genes[i]] = true;
         }
       }
+    }*/
+    for (int i = 0; i<blocks; i++) {
+      if (i < blocks/2) {
+        genes[i] = aa.genes[i];
+      } else {
+        genes[i] = bb.genes[i];
+      }
     }
     int ch = (int) random(0, 1 / MUTCH);
     if (ch == 0) {
@@ -57,7 +64,9 @@ class Animal implements Comparable<Animal> {
       while (r2==r1) {
         r2 = (int)random(0, blocks);
       }
-      swap(genes, r1, r2);
+      //swap(genes, r1, r2);
+      genes[r1] = (int)random(0, blocks);
+      genes[r2] = (int)random(0, blocks);
     }
     //print("Genes: ");
     //for (int i = 0; i<blocks; i++) {

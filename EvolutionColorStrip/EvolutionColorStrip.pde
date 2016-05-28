@@ -11,12 +11,12 @@ int blocks = bw*bh;
 PImage img, tofind;
 int imgw = 512;
 int imgh = 512;
-float MUTCH = 0.05;
+float MUTCH = 0.5;
 int bpw = imgw/bw;
 int bph = imgh/bh;
 int[] idxs = new int[bw*bh];
 ArrayList<Integer> aridx = new ArrayList<Integer>();
-
+int firstFiness = 0;
 void setup() {
   size(800, 800);
   noStroke();
@@ -28,6 +28,7 @@ void setup() {
   for (int i = 0; i<numans; i++) {
     animals.add(new Animal(goal));
   }
+  firstFiness = animals.get(0).fitness;
   Collections.sort(animals);
   for (int i = 0; i<bw*bh; i++) {
     aridx.add(i);
@@ -67,6 +68,7 @@ void swap(int[] idx, int a, int b) {
 
 void draw() {
   background(51);
+  MUTCH = animals.get(0).fitness/(float)firstFiness;
   //for (int i = 0; i<animals.size(); i++) {
   //  animals.get(i).render((i%5)*(imgw+4), (i/5)*(imgh+4));
   //}
@@ -89,4 +91,5 @@ void draw() {
   color(255);
   text("Gens: " + generation, 400, 30);
   text("Best: " + animals.get(0).fitness, 400, 50);
+  text("Mut: " + MUTCH, 400, 70);
 }
