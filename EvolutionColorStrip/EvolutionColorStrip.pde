@@ -5,12 +5,12 @@ Animal goal;
 int generation = 0;
 ArrayList<Animal> animals = new ArrayList<Animal>();
 int numans = 35;
-int bw = 32;
-int bh = 32;
+int bw = 64;
+int bh =64;
 int blocks = bw*bh;
 PImage img, tofind;
-int imgw = 64;
-int imgh = 64;
+int imgw = 512;
+int imgh = 512;
 float MUTCH = 0.05;
 int bpw = imgw/bw;
 int bph = imgh/bh;
@@ -22,8 +22,8 @@ void setup() {
   noStroke();
   frameRate(500);
   colorMode(RGB, 255);
-  img = loadImage("lion.png");
-  tofind = loadImage("leo.png");
+  img = loadImage("dog.png");
+  tofind = loadImage("city.png");
   goal = new Animal(img);
   for (int i = 0; i<numans; i++) {
     animals.add(new Animal(goal));
@@ -67,9 +67,9 @@ void swap(int[] idx, int a, int b) {
 
 void draw() {
   background(51);
-  for (int i = 0; i<animals.size(); i++) {
-    animals.get(i).render((i%5)*(imgw+4), (i/5)*(imgh+4));
-  }
+  //for (int i = 0; i<animals.size(); i++) {
+  //  animals.get(i).render((i%5)*(imgw+4), (i/5)*(imgh+4));
+  //}
   if (animals.get(0).fitness != 0) {
 
     generation++;
@@ -83,9 +83,9 @@ void draw() {
       animals.remove(i);
     }
   }
-  //animals.get(0).render(imgw, 100);
-  goal.render(imgw*6, 100);
-  image(tofind, imgw*6, 200);
+  animals.get(0).render(10, 100);
+  goal.render(300, 100);
+  image(tofind, 300, 300, 200,200);
   color(255);
   text("Gens: " + generation, 400, 30);
   text("Best: " + animals.get(0).fitness, 400, 50);

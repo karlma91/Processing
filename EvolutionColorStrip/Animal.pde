@@ -81,7 +81,7 @@ class Animal implements Comparable<Animal> {
 
   void render(int x, int y) {
     image.updatePixels();
-    image(image, x, y);//, imgw*2, imgh*2);
+    image(image, x, y,200,200);//, imgw*2, imgh*2);
   }
 
   int getFitness(Animal a) {
