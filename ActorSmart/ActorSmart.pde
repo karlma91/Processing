@@ -13,7 +13,7 @@ void setup()
   size(640, 360);
   frameRate(30);
   ellipseMode(RADIUS);
-  for (int i = 0; i<1; i++) {
+  for (int i = 0; i<20; i++) {
     actors.add(new Actor(random(0, width), random(0, height)));
   }
   for (int i = 0; i<100; i++) {
@@ -24,15 +24,21 @@ void setup()
 void draw()
 {
   background(102);
+  
   for (int i = 0; i<actors.size (); i++) {
     Actor aa = actors.get(i);
     aa.update(1.0/(float)fps);
+    for (int j = 0; j<aa.antennas.size (); j++) {
+     aa.antcolors.set(j,color(0,0,0));
+    }
     for (int j = 0; j<aa.antennas.size (); j++) {
       PVector an = aa.antennas.get(j);
       for (int k = foods.size ()-1; k>=0; k--) {
         Food f = foods.get(k);
         if (circleLine(aa.pos.x, aa.pos.y, aa.pos.x+an.x*an.z, aa.pos.y+an.y*an.z, f.pos.x, f.pos.y, f.radius)) {
-          foods.remove(k);
+          //foods.remove(k);
+          aa.antcolors.set(j,f.c);
+          break;
         }
       }
     }
@@ -67,7 +73,7 @@ boolean circleLine(float ax, float ay, float bx, float by, float cx, float cy, f
   float dx = bx - ax;
   float dy = by - ay;
   float fx = ax - cx;
-  float fy = ay - cx;
+  float fy = ay - cy;
   float a = dx * dx + dy * dy;
   float b = 2*(dx * fx + dy * fy);
   float c = fx * fx + fy * fy - radius * radius;
@@ -88,4 +94,3 @@ boolean circleLine(float ax, float ay, float bx, float by, float cx, float cy, f
   }
   return false;
 }
-
