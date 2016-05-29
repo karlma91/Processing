@@ -1,20 +1,18 @@
 
-int fps = 30;
-Actor a = new Actor(10, 100);
-
+int fps = 15;
 ArrayList<Actor> actors = new ArrayList<Actor>();
 ArrayList<Food> foods = new ArrayList<Food>();
 
-boolean left = false;
-boolean right = false;
-boolean forward = false;
+boolean[] allkeys = new boolean[256];
+
+Controller cc = new KeyBoardController();
 void setup()
 {
   size(640, 360);
   frameRate(30);
   ellipseMode(RADIUS);
-  for (int i = 0; i<20; i++) {
-    actors.add(new Actor(random(0, width), random(0, height)));
+  for (int i = 0; i<1; i++) {
+    actors.add(new Actor(random(0, width), random(0, height), cc));
   }
   for (int i = 0; i<100; i++) {
     foods.add(new Food());
@@ -24,12 +22,12 @@ void setup()
 void draw()
 {
   background(102);
-  
+
   for (int i = 0; i<actors.size (); i++) {
     Actor aa = actors.get(i);
-    aa.update(1.0/(float)fps);
+    aa.update();
     for (int j = 0; j<aa.antennas.size (); j++) {
-     aa.antcolors.set(j,color(0,0,0));
+      aa.antcolors.set(j, color(0, 0, 0));
     }
     for (int j = 0; j<aa.antennas.size (); j++) {
       PVector an = aa.antennas.get(j);
@@ -37,36 +35,28 @@ void draw()
         Food f = foods.get(k);
         if (circleLine(aa.pos.x, aa.pos.y, aa.pos.x+an.x*an.z, aa.pos.y+an.y*an.z, f.pos.x, f.pos.y, f.radius)) {
           //foods.remove(k);
-          aa.antcolors.set(j,f.c);
+          aa.antcolors.set(j, f.c);
           break;
         }
       }
     }
-    aa.render();
   }
   for (int i = 0; i<foods.size (); i++) {
     foods.get(i).render();
   }
+  for (int i = 0; i<actors.size (); i++) {
+    Actor aa = actors.get(i);
+    aa.update();
+    aa.render();
+  }
 }
 
 void keyPressed() {
-  if (key == 'a') {
-    left = true;
-  } else if (key == 'd') {
-    right = true;
-  } else if (key == 'w') {
-    forward = true;
-  }
+  allkeys[key] = true;
 }
 
 void keyReleased() {
-  if (key == 'a') {
-    left = false;
-  } else if (key == 'd') {
-    right = false;
-  } else if (key == 'w') {
-    forward = false;
-  }
+  allkeys[key] = false;
 }
 
 boolean circleLine(float ax, float ay, float bx, float by, float cx, float cy, float radius) {
