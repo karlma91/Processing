@@ -1,27 +1,10 @@
 class KeyBoardController implements Controller {
 
+  PVector temp = new PVector();
   public void init(Actor a) {
   }
   public void update(Actor a) {
-    
-    float sum = 0;
-    PVector pv = new PVector();
-    for (int i = 0; i<a.scores.size (); i++) {
-      float score = a.scores.get(i);
-      pv.set(a.antennas.get(i));
-      if(score < 0.0){
-        pv.x = -pv.x;
-        pv.y = -pv.y;
-      }else if(score > -0.5 && score <0.5){
-        pv.set(0,0);
-        continue;
-      }
-      pv.mult(100);
-      print(score + " " + "(" + pv.x + ", " + pv.y + "),");
-      sum += a.scores.get(i);
-      a.accellerate(pv);
-    }
-    println();
+
     if (allkeys['w']) {
       a.up();
     }
@@ -34,12 +17,24 @@ class KeyBoardController implements Controller {
     if (allkeys['d']) {
       a.right();
     }
+    for (int i = 0; i<a.scores.size (); i++) {
+      float score = a.scores.get(i);
+      print(score+ ", ");
+    }
+    println();
   }
   public void render(Actor a) {
     textSize(14);
     fill(0);
-    text("Speed: " + a.vel.mag(), 0, 14);
-    text("Score: " + a.food, 0, 28);
+    //text("Speed: " + a.vel.mag(), 0, 14);
+
+    for (int i = 0; i<a.scores.size (); i++) {
+      float score = a.scores.get(i);
+      temp.set(a.antennas.get(i));
+      temp.mult(1-abs(score));
+      if (score != 0.0) {
+        ellipse(a.pos.x + temp.x, a.pos.y + temp.y, 2, 2);
+      }
+    }
   }
 }
-

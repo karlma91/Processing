@@ -10,10 +10,10 @@ class Food {
     pos = new PVector(random(10, width-20), random(10, height-20));
     radius = 5;
     if (type == 1) {
-      value = -1;
+      value = -10;
       c = color(230, 20, 20);
     } else if (type == 2) {
-      value = 1;
+      value = 10;
       c = color(20, 230, 20);
     }
   }
@@ -27,4 +27,3 @@ class Food {
     ellipse(pos.x, pos.y, radius, radius);
   }
 }
-

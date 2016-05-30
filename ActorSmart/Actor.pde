@@ -8,29 +8,29 @@ class Actor {
   PVector pos;
   PVector vel;
   PVector acc;
-  float r = 6;
+  float r = 7;
   float maxSpeed = 50; // pixels per second
-  float maxAcc = 100000; // pixels per second per second
+  float maxAcc = 2000; // pixels per second per second
   float dt = 1.0/fps;
-  float damping = 0.8;
-  boolean alive = true;
-  float wiskerslength = 50;
-  float food = 2;
+  float damping = 0.90;
+  int numRays = 16;
+  float wiskerslength = 60;
+  float life = 100;
 
   ArrayList<PVector> antennas = new ArrayList<PVector>();
   ArrayList<Float> scores = new ArrayList<Float>();
   ArrayList<Integer> antcolors = new ArrayList<Integer>();
   Controller c;
 
-  int numRays = 16;
   Actor(float x, float y, Controller co) {
     c =  co;
     pos = new PVector(x, y);
     vel = new PVector();
     acc = new PVector();
     for (int i = 0; i<numRays; i++) {
-      PVector a = new PVector(1, 0, wiskerslength);
+      PVector a = new PVector(1, 0);
       a.rotate(i* (2*PI/numRays));
+      a.mult(wiskerslength);
       antennas.add(a);
       antcolors.add(color(0, 0, 255));
       scores.add(0.0);
@@ -40,14 +40,9 @@ class Actor {
 
   void update() {
     c.update(this);
-
-    if (food <0) {
-      alive = false;
-    }
+    life-=3*dt;
     vel.add(acc.x*dt*dt, acc.y*dt*dt, 0);
-    if (acc.mag()<=0) {
-      //vel.mult(damping);
-    }
+    vel.mult(damping);
     acc.set(0, 0);
     if (vel.mag() > maxSpeed) {
       vel.normalize();
@@ -87,9 +82,18 @@ class Actor {
     for (int i = 0; i<antennas.size (); i++) {
       PVector temp = antennas.get(i);
       stroke(antcolors.get(i));
-      line(pos.x, pos.y, pos.x + temp.x*temp.z, pos.y + temp.y*temp.z);
+      if (antcolors.get(i) != color(0, 0, 0)) {
+        strokeWeight(2);
+      } else {
+        strokeWeight(1);
+      }
+      line(pos.x, pos.y, pos.x + temp.x, pos.y + temp.y);
     }
+    stroke(0);
     ellipse(pos.x, pos.y, r, r);
+    fill(0);
+    textSize(10);
+    text((int)life, pos.x-r, pos.y+3);
   }
   PVector temp = new PVector();
   void accellerate(PVector dir) {
@@ -113,4 +117,3 @@ class Actor {
     accellerate(rightacc);
   }
 }
-
