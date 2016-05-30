@@ -11,36 +11,64 @@ void setup()
   size(640, 360);
   frameRate(30);
   ellipseMode(RADIUS);
-  for (int i = 0; i<1; i++) {
+  for (int i = 0; i<10; i++) {
     actors.add(new Actor(random(0, width), random(0, height), cc));
   }
   for (int i = 0; i<100; i++) {
-    foods.add(new Food());
+    foods.add(new Food((int)random(1, 3)));
   }
 }
 
 void draw()
 {
-  background(102);
+  background(255);
 
+  PVector di = new PVector();
   for (int i = 0; i<actors.size (); i++) {
     Actor aa = actors.get(i);
-    aa.update();
     for (int j = 0; j<aa.antennas.size (); j++) {
       aa.antcolors.set(j, color(0, 0, 0));
+      aa.scores.set(j, 0.0);
     }
     for (int j = 0; j<aa.antennas.size (); j++) {
       PVector an = aa.antennas.get(j);
       for (int k = foods.size ()-1; k>=0; k--) {
+        di.set(aa.pos);
         Food f = foods.get(k);
+        di.sub(f.pos);
+        if (di.mag() < f.radius+aa.r) {
+          aa.food +=f.value;
+          foods.remove(k);          
+          break;
+        }
         if (circleLine(aa.pos.x, aa.pos.y, aa.pos.x+an.x*an.z, aa.pos.y+an.y*an.z, f.pos.x, f.pos.y, f.radius)) {
-          //foods.remove(k);
           aa.antcolors.set(j, f.c);
+          aa.scores.set(j, f.value);
           break;
         }
       }
     }
   }
+  for (int i = foods.size (); i<100; i++) {
+    foods.add(new Food((int)random(1, 3)));
+  }
+  for (int i = 0; i<actors.size (); i++) {
+    Actor aa = actors.get(i);
+    for (int j = 0; j<aa.antennas.size (); j++) {
+      PVector an = aa.antennas.get(j);
+      if (aa.scores.get(j) == 0 && wallCollision(aa.pos.x+an.x*an.z, aa.pos.y+an.y*an.z)) {
+        aa.scores.set(j, -2.0);
+        aa.antcolors.set(j, color(0, 0, 255));
+      }
+    }
+  }
+
+  for (int k = actors.size ()-1; k>=0; k--) {
+    if(!actors.get(k).alive){
+      actors.remove(k);  
+    }
+  }
+
   for (int i = 0; i<foods.size (); i++) {
     foods.get(i).render();
   }
@@ -57,6 +85,23 @@ void keyPressed() {
 
 void keyReleased() {
   allkeys[key] = false;
+}
+
+
+boolean wallCollision(float x, float y) {
+  if (x < 0) {
+    return true;
+  }
+  if (x > width) {
+    return true;
+  }
+  if (y < 0) {
+    return true;
+  }
+  if (y > height) {
+    return true;
+  }
+  return false;
 }
 
 boolean circleLine(float ax, float ay, float bx, float by, float cx, float cy, float radius) {
@@ -84,3 +129,4 @@ boolean circleLine(float ax, float ay, float bx, float by, float cx, float cy, f
   }
   return false;
 }
+

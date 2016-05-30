@@ -5,7 +5,7 @@ abstract class Creature {
   float speed = 50;
   float turnspeed = 2*PI;
   float dt = 0;
-  float wiskerslength = 30;
+  float wiskerslength = 50;
   ArrayList<PVector> antennas = new ArrayList<PVector>();
   ArrayList<Integer> antcolors = new ArrayList<Integer>();
 
@@ -13,7 +13,7 @@ abstract class Creature {
     pos = new PVector(x, y);
     dir = new PVector(1, 0);
     //dir.rotate(random(0,2*PI));
-    int numRays = 8;
+    int numRays = 32;
     for (int i = 0; i<numRays; i++) {
       PVector a = new PVector(1, 0, wiskerslength);
       a.rotate(i* (2*PI/numRays));

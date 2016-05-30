@@ -8,45 +8,52 @@ class Actor {
   PVector pos;
   PVector vel;
   PVector acc;
-  float r = 5;
+  float r = 6;
   float maxSpeed = 50; // pixels per second
-  float maxAcc = 1000; // pixels per second per second
+  float maxAcc = 100000; // pixels per second per second
   float dt = 1.0/fps;
   float damping = 0.8;
-
-  float wiskerslength = 30;
+  boolean alive = true;
+  float wiskerslength = 50;
+  float food = 2;
 
   ArrayList<PVector> antennas = new ArrayList<PVector>();
+  ArrayList<Float> scores = new ArrayList<Float>();
   ArrayList<Integer> antcolors = new ArrayList<Integer>();
   Controller c;
 
+  int numRays = 16;
   Actor(float x, float y, Controller co) {
     c =  co;
     pos = new PVector(x, y);
     vel = new PVector();
     acc = new PVector();
-    int numRays = 8;
     for (int i = 0; i<numRays; i++) {
       PVector a = new PVector(1, 0, wiskerslength);
       a.rotate(i* (2*PI/numRays));
       antennas.add(a);
       antcolors.add(color(0, 0, 255));
+      scores.add(0.0);
     }
     c.init(this);
   }
 
   void update() {
     c.update(this);
-    vel.add(acc.x*dt*dt, acc.y*dt*dt);
+
+    if (food <0) {
+      alive = false;
+    }
+    vel.add(acc.x*dt*dt, acc.y*dt*dt, 0);
     if (acc.mag()<=0) {
-      vel.mult(damping);
+      //vel.mult(damping);
     }
     acc.set(0, 0);
     if (vel.mag() > maxSpeed) {
       vel.normalize();
       vel.mult(maxSpeed);
     }
-    pos.add(vel.x*dt, vel.y*dt);
+    pos.add(vel.x*dt, vel.y*dt, 0);
     checkCollision();
   }
 
@@ -84,10 +91,12 @@ class Actor {
     }
     ellipse(pos.x, pos.y, r, r);
   }
+  PVector temp = new PVector();
   void accellerate(PVector dir) {
-    dir.normalize();
-    dir.mult(maxAcc);
-    acc.add(dir);
+    temp.set(dir);
+    temp.normalize();
+    temp.mult(maxAcc);
+    acc.add(temp);
     acc.normalize();
     acc.mult(maxAcc);
   }
@@ -104,3 +113,4 @@ class Actor {
     accellerate(rightacc);
   }
 }
+
