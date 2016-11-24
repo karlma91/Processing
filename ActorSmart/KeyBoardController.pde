@@ -19,9 +19,9 @@ class KeyBoardController implements Controller {
     }
     for (int i = 0; i<a.scores.size (); i++) {
       float score = a.scores.get(i);
-      print(score+ ", ");
+      //print(score+ ", ");
     }
-    println();
+    //println();
   }
   public void render(Actor a) {
     textSize(14);

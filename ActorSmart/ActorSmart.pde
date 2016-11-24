@@ -11,7 +11,7 @@ Controller[] controllers = {cc, cs};
 int maxfood = 150;
 void setup()
 {
-  size(640, 360);
+  size(1200, 900);
   frameRate(30);
   ellipseMode(RADIUS);
   for (int i = 0; i<controllers.length; i++) {
@@ -51,7 +51,7 @@ void draw()
           if (f.type == 1) {
             aa.scores.set(j, -(1 - dist));
           }
-          //f.render();
+          f.render();
           break;
         }
       }
@@ -78,7 +78,7 @@ void draw()
   }
 
   for (int i = 0; i<foods.size (); i++) {
-    foods.get(i).render();
+    //foods.get(i).render();
   }
   for (int i = 0; i<actors.size (); i++) {
     Actor aa = actors.get(i);

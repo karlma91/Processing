@@ -13,10 +13,10 @@ class SimpleController implements Controller {
       pv.set(a.antennas.get(i));
       pv.normalize();
       if (score < 0.0) {
-        pv.x = -pv.x;
-        pv.y = -pv.y;
+        pv.x = -pv.x + random(0,0.2);
+        pv.y = -pv.y+ random(0,0.2);
         pv.mult(1-abs(score));
-        pv.mult(0.5);
+        pv.mult(0.8);
       } else if (score > -0.1 && score <0.1) {
         pv.set(0, 0);
         continue;
