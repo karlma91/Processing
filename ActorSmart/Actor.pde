@@ -9,10 +9,10 @@ class Actor {
   PVector vel;
   PVector acc;
   float r = 7;
-  float maxSpeed = 50; // pixels per second
-  float maxAcc = 2000; // pixels per second per second
+  float maxSpeed = 300; // pixels per second
+  float maxAcc = 20000; // pixels per second per second
   float dt = 1.0/fps;
-  float damping = 0.90;
+  float damping = 0.80;
   int numRays = 16;
   float wiskerslength = 60;
   float life = 100;
@@ -96,7 +96,7 @@ class Actor {
     text((int)life, pos.x-r, pos.y+3);
   }
   PVector temp = new PVector();
-  void accellerate(PVector dir) {
+  private void accellerate(PVector dir) {
     temp.set(dir);
     temp.normalize();
     temp.mult(maxAcc);

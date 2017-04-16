@@ -13,8 +13,8 @@ class SimpleController implements Controller {
       pv.set(a.antennas.get(i));
       pv.normalize();
       if (score < 0.0) {
-        pv.x = -pv.x + random(0,0.2);
-        pv.y = -pv.y+ random(0,0.2);
+        pv.x = -pv.x + random(-0.4,0.4);
+        pv.y = -pv.y+ random(-0.4,0.4);
         pv.mult(1-abs(score));
         pv.mult(0.8);
       } else if (score > -0.1 && score <0.1) {
@@ -30,7 +30,15 @@ class SimpleController implements Controller {
       vsum.rotate(random(-PI/5, PI/5));
     }
     prev.set(vsum);
-    a.accellerate(vsum);
+    if(vsum.y >= abs(vsum.x)){
+      a.down();
+    }if(vsum.y <= -abs(vsum.x)){
+      a.up();
+    }else if(vsum.x >= abs(vsum.y)){
+      a.right();
+    }else if(vsum.x <= -abs(vsum.y)){
+      a.left();
+    }
   }
 
   public void render(Actor a) {

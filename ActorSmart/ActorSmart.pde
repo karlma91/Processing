@@ -8,24 +8,25 @@ boolean[] allkeys = new boolean[256];
 Controller cc = new KeyBoardController();
 Controller cs = new SimpleController();
 Controller[] controllers = {cc, cs};
-int maxfood = 150;
+int maxfood = 100;
 void setup()
 {
   size(1200, 900);
-  frameRate(30);
+  frameRate(fps);
   ellipseMode(RADIUS);
   for (int i = 0; i<controllers.length; i++) {
     actors.add(new Actor(random(0, width), random(0, height), controllers[i]));
   }
+  for (int i = 0; i<10; i++) {
+    actors.add(new Actor(random(0, width), random(0, height), new SimpleController()));
+  }
   for (int i = 0; i<maxfood; i++) {
-    foods.add(new Food((int)random(1, 3)));
+    foods.add(new Food((int)random(1, 6)<2?1:2));
   }
 }
 
-void draw()
+void update()
 {
-  background(255);
-  strokeWeight(1);
   PVector di = new PVector();
   for (int i = 0; i<actors.size (); i++) {
     Actor aa = actors.get(i);
@@ -51,14 +52,14 @@ void draw()
           if (f.type == 1) {
             aa.scores.set(j, -(1 - dist));
           }
-          f.render();
+          //f.render();
           break;
         }
       }
     }
   }
   for (int i = foods.size (); i<maxfood; i++) {
-    foods.add(new Food((int)random(1, 3)));
+    foods.add(new Food((int)random(1, 6)<2?1:2));
   }
   for (int i = 0; i<actors.size (); i++) {
     Actor aa = actors.get(i);
@@ -76,15 +77,29 @@ void draw()
       actors.remove(k);
     }
   }
-
-  for (int i = 0; i<foods.size (); i++) {
-    //foods.get(i).render();
-  }
   for (int i = 0; i<actors.size (); i++) {
     Actor aa = actors.get(i);
     aa.update();
+  }
+}
+
+void render()
+{
+  background(255);
+  strokeWeight(1);
+  for (int i = 0; i<foods.size (); i++) {
+    foods.get(i).render();
+  }
+  for (int i = 0; i<actors.size (); i++) {
+    Actor aa = actors.get(i);
     aa.render();
   }
+}
+
+void draw()
+{
+  update();
+  render();
 }
 
 void keyPressed() {
